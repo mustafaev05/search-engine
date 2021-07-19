@@ -5,13 +5,12 @@ import org.springframework.stereotype.Repository;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class FileRepository {
-
-    Map<String, String> mapOfFiles;
+    Map<String, Set<String>> mapOfFiles;
 
     public FileRepository() {
         this.mapOfFiles = new HashMap<>();
@@ -24,23 +23,31 @@ public class FileRepository {
         while (line != null) {
 
             if (!line.trim().equals("")) {
-                String[] words = line.split("[, '@_.?!]+");
+                String[] words = line.split("[, \"'@_.?!/]+");
 
                 for (String word : words) {
-                    if (mapOfFiles.containsKey(word) &&
-                            !mapOfFiles.get(word).equals(file.getName())) {
-                        mapOfFiles.put(word, mapOfFiles.get(word) + file.getName());
+
+                    if (mapOfFiles.containsKey(word.toLowerCase())) {
+                        Set<String> files = mapOfFiles.get(word.toLowerCase());
+                        files.add(file.getName());
+                    } else {
+                        Set<String> files = new HashSet<>();
+                        files.add(file.getName());
+                        mapOfFiles.put(word.toLowerCase(), files);
                     }
 
-                    mapOfFiles.put(word, file.getName());
                 }
             }
             line = reader.readLine();
         }
     }
 
-    public Map<String, String> getMapOfFiles() {
+    public Map<String, Set<String>> getMapOfFiles() {
         return mapOfFiles;
+    }
+
+    public Set<String> searchWord(String word) {
+        return mapOfFiles.get(word);
     }
 
 }

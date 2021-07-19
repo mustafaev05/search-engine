@@ -6,7 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 public class FileService {
@@ -20,6 +21,14 @@ public class FileService {
 
         multipartFile.transferTo(file);
         fileRepository.addMapOfFile(file);
+    }
+
+    public Set<String> searchWord(String word) {
+        return fileRepository.searchWord(word);
+    }
+
+    public Map<String, Set<String>> getMapOfFiles() {
+        return fileRepository.getMapOfFiles();
     }
 
 }
